@@ -147,7 +147,7 @@ public class StartFragment extends Fragment {
                 public void run() {
                     navController.navigate(R.id.action_startFragment_to_listFragment);
                 }
-            },2500);
+            },1500);
 
         }
     }

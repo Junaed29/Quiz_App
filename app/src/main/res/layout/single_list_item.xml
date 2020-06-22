@@ -7,15 +7,25 @@
     android:layout_margin="16dp"
     android:background="@drawable/dark_bg">
 
-    <ImageView
-        android:id="@+id/list_image"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
+        android:background="@color/colorDark"
+        app:cardCornerRadius="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/placeholder_image" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/list_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/placeholder_image" />
+
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:id="@+id/list_title"
@@ -28,18 +38,30 @@
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_image" />
+        app:layout_constraintTop_toBottomOf="@+id/card_image" />
+
+    <View
+        android:id="@+id/imageCoverView"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@drawable/image_cover"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/card_image"
+        app:layout_constraintEnd_toEndOf="@+id/card_image"
+        app:layout_constraintStart_toStartOf="@+id/card_image" />
 
     <TextView
         android:id="@+id/list_disc"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:fontFamily="@font/work_sans"
         android:text="Quiz Discription"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_title"
         app:lineHeight="28dp" />
@@ -53,7 +75,7 @@
         android:fontFamily="@font/work_sans"
         android:text="Diffucilty"
         android:textColor="@color/colorLightText"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_disc" />
 

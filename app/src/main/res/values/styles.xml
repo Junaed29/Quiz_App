@@ -7,6 +7,8 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:windowTranslucentStatus">true</item>
+
+        <item name="android:navigationBarColor">@color/colorDark</item>
     </style>
 
 </resources>
