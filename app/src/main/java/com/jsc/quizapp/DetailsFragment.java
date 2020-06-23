@@ -20,6 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -38,8 +43,14 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     private Button startQuizButton;
 
     private String quiz_id;
+    private String quiz_name;
 
     private int position;
+
+    private FirebaseFirestore firestore;
+    private FirebaseAuth firebaseAuth;
+
+    private String currentUserId;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -77,6 +88,13 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        firebaseAuth = firebaseAuth.getInstance();
+        if (firebaseAuth.getCurrentUser()==null){
+            // Go back to Home
+        }else {
+            currentUserId = firebaseAuth.getCurrentUser().getUid();
+        }
+
         viewModel = new ViewModelProvider(getActivity()).get(QuizViewModel.class);
 
 
@@ -97,7 +115,47 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
                 totalQuesTextView.setText(quizListModels.get(position).getQuestions()+"");
 
                 quiz_id = quizListModels.get(position).getQuiz_id();
+                quiz_name = quizListModels.get(position).getName();
 
+                //Load Results Data
+                loadResultsData();
+
+            }
+        });
+    }
+
+    private void loadResultsData() {
+        //Get Results
+        firestore = FirebaseFirestore.getInstance();
+        firestore.collection("QuizList").document(quiz_id)
+                .collection("Results").document(currentUserId)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    Log.d(TAG, "onComplete: "+task);
+
+                    DocumentSnapshot results = task.getResult();
+
+                   if (results != null && results.exists()){
+                       Long correct = results.getLong("correct");
+                       Long wrong = results.getLong("wrong");
+                       Long unanswered = results.getLong("unanswered");
+
+                       Log.d(TAG, "correct: "+correct);
+                       Log.d(TAG, "wrong: "+wrong);
+                       Log.d(TAG, "unanswered: "+unanswered);
+
+                       //Calculate Progress
+                       Long total = correct + wrong + unanswered;
+
+                       Long percent = (correct*100)/total;
+                       lastScoreTextView.setText(percent.toString()+"%");
+
+                   }
+                }else {
+                    lastScoreTextView.setText("NA");
+                }
             }
         });
     }
@@ -107,6 +165,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment();
         action.setPosition(position);
         action.setQuizId(quiz_id);
+        action.setQuizName(quiz_name);
         navController.navigate(action);
     }
 }
