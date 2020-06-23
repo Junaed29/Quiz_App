@@ -20,6 +20,12 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
 
     private List<QuizListModel> quizListModels;
 
+    private OnClickQuizButton clickQuizButton;
+
+    public QuizListAdapter(OnClickQuizButton clickQuizButton) {
+        this.clickQuizButton = clickQuizButton;
+    }
+
     @NonNull
     @Override
     public QuizViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,7 +66,7 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
         }
     }
 
-    public class QuizViewHolder extends RecyclerView.ViewHolder {
+    public class QuizViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView placeHolderImageView;
         TextView titleTextView;
@@ -76,10 +82,21 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
             difficultyTextView = itemView.findViewById(R.id.list_diffucilty);
             startQuizButton = itemView.findViewById(R.id.list_btn);
 
+            startQuizButton.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            clickQuizButton.onItemClick(getAdapterPosition());
         }
     }
 
     public void setQuizListModels(List<QuizListModel> quizListModels) {
         this.quizListModels = quizListModels;
+    }
+
+    public interface OnClickQuizButton{
+        void onItemClick(int position);
     }
 }

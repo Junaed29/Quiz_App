@@ -13,18 +13,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements QuizListAdapter.OnClickQuizButton {
 
     private QuizViewModel viewModel;
     private RecyclerView recyclerView;
     private QuizListAdapter adapter;
     private ProgressBar listProgressBar;
     private Animation fade_in_Anim,fade_out_Anim;
+    private NavController navController;
 
     public ListFragment() {
         // Required empty public constructor
@@ -37,10 +40,14 @@ public class ListFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.list_view);
         listProgressBar = (ProgressBar) view.findViewById(R.id.list_progress);
-        adapter = new QuizListAdapter();
+
+        adapter = new QuizListAdapter(this);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
+
+        navController = Navigation.findNavController(view);
 
         fade_in_Anim = AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_in);
         fade_out_Anim = AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_out);
@@ -70,5 +77,12 @@ public class ListFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        ListFragmentDirections.ActionListFragmentToDetailsFragment action = ListFragmentDirections.actionListFragmentToDetailsFragment();
+        action.setPosition(position);
+        navController.navigate(action);
     }
 }

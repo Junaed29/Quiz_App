@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/details_image"
         android:layout_width="0dp"
-        android:layout_height="265dp"
+        android:layout_height="235dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,14 +32,20 @@
 
     <TextView
         android:id="@+id/details_disc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical|end"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="18dp"
         android:fontFamily="@font/work_sans"
+        android:scrollbars="vertical"
         android:text="Quiz Discription"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/details_diffucilty"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details_title"
         app:lineHeight="28dp" />
@@ -49,39 +55,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="@font/work_sans"
         android:text="Diffucilty"
         android:textColor="@color/colorLightText"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_disc" />
+        app:layout_constraintBottom_toTopOf="@+id/details_questions"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/details_questions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/work_sans"
         android:text="Total Question"
         android:textColor="@color/colorLightText"
         android:textSize="18sp"
-        android:fontFamily="@font/work_sans"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_diffucilty" />
+        app:layout_constraintBottom_toTopOf="@+id/details_score"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/details_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="@font/work_sans"
         android:text="Your Last Score"
         android:textColor="@color/colorLightText"
         android:textSize="18sp"
-        android:fontFamily="@font/work_sans"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_questions" />
+        app:layout_constraintBottom_toTopOf="@+id/details_start_btn"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/details_diffucilty_text"
