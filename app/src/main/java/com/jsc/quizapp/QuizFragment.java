@@ -1,5 +1,8 @@
 package com.jsc.quizapp;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.method.ScrollingMovementMethod;
@@ -13,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -37,6 +41,8 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
     private String currentUserId;
     private String quizTitle;
+
+    private Dialog dialog;
 
     private static final String TAG = "QuizFragment";
 
@@ -77,6 +83,19 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                openQuitDialog();
+            }
+        };
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,7 +108,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        closeImageButton = view.findViewById(R.id.quiz_close_btn);
+
         navController = Navigation.findNavController(view);
 
         firebaseAuth = firebaseAuth.getInstance();
@@ -98,6 +117,8 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         }else {
             currentUserId = firebaseAuth.getCurrentUser().getUid();
         }
+
+        closeImageButton = view.findViewById(R.id.quiz_close_btn);
 
         titleTextView = view.findViewById(R.id.quez_title);
         questionNumberTextView = view.findViewById(R.id.quiz_question_number);
@@ -151,6 +172,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         option_bButton.setOnClickListener(this);
         option_cButton.setOnClickListener(this);
         nextQuesButton.setOnClickListener(this);
+        closeImageButton.setOnClickListener(this);
     }
 
     private void loadUI() {
@@ -243,32 +265,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         nextQuesButton.setEnabled(false);
     }
 
-    public void pickQuestions() {
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.quiz_option_one:
-                selectedAnswer(option_aButton);
-                break;
-            case R.id.quiz_option_two:
-                selectedAnswer(option_bButton);
-                break;
-            case R.id.quiz_option_three:
-                selectedAnswer(option_cButton);
-                break;
-            case R.id.quiz_next_btn:
-                if ((currentQuestionNumber+1) == allQuestionModelList.size()){
-                    submitResults();
-                }else {
-                    currentQuestionNumber++;
-                    loadQuestion(currentQuestionNumber);
-                    resetOptions();
-                }
-        }
-    }
 
     private void submitResults() {
         HashMap<String, Object> resultsMap = new HashMap<>();
@@ -357,4 +354,60 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    public void openQuitDialog() {
+        dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.exit_dialog_sample);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.PauseDialogAnimation;
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button cancelButton = dialog.findViewById(R.id.cancel_btn);
+        Button confirmButton = dialog.findViewById(R.id.confirm_btn);
+
+        confirmButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        dialog.show();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.quiz_option_one:
+                selectedAnswer(option_aButton);
+                break;
+            case R.id.quiz_option_two:
+                selectedAnswer(option_bButton);
+                break;
+            case R.id.quiz_option_three:
+                selectedAnswer(option_cButton);
+                break;
+            case R.id.quiz_next_btn:
+                if ((currentQuestionNumber+1) == allQuestionModelList.size()){
+                    submitResults();
+                }else {
+                    currentQuestionNumber++;
+                    loadQuestion(currentQuestionNumber);
+                    resetOptions();
+                }
+                break;
+            case R.id.cancel_btn:
+                dialog.dismiss();
+                break;
+            case R.id.confirm_btn:
+                dialog.dismiss();
+                //Set canAnswer false
+                canAnswer = false;
+
+                //Stop the timer
+                countDownTimer.cancel();
+                navController.popBackStack();
+                break;
+
+            case R.id.quiz_close_btn :
+                openQuitDialog();
+                break;
+        }
+    }
 }
