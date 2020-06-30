@@ -41,11 +41,11 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
         holder.titleTextView.setText(quizListModels.get(position).getName());
 
         String imageUrl = quizListModels.get(position).getImage();
-        Glide.with(holder.itemView.getContext())
-                .load(imageUrl)
-                .centerCrop()
-                .placeholder(R.drawable.placeholder_image)
-                .into(holder.placeHolderImageView);
+//        Glide.with(holder.itemView.getContext())
+//                .load(imageUrl)
+//                .centerCrop()
+//                .placeholder(R.drawable.placeholder_image)
+//                .into(holder.placeHolderImageView);
 
         String desc_text = quizListModels.get(position).getDesc();
         if (desc_text.length()>150){

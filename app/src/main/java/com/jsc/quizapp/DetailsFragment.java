@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +34,8 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
     private QuizViewModel viewModel;
     private NavController navController;
+
+    Boolean visibility = false;
 
     private ImageView imageView;
     private TextView titleTextView;
@@ -80,6 +83,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_details, container, false);
     }
 
@@ -87,6 +91,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
 
         firebaseAuth = firebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser()==null){
@@ -102,11 +107,11 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onChanged(List<QuizListModel> quizListModels) {
 
-                Glide.with(getContext())
-                        .load(quizListModels.get(position).getImage())
-                        .centerCrop()
-                        .placeholder(R.drawable.placeholder_image)
-                        .into(imageView);
+//                Glide.with(getContext())
+//                        .load(quizListModels.get(position).getImage())
+//                        .centerCrop()
+//                        .placeholder(R.drawable.placeholder_image)
+//                        .into(imageView);
 
                 titleTextView.setText(quizListModels.get(position).getName());
                 descTextView.setText(quizListModels.get(position).getDesc());
@@ -122,9 +127,28 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+
+
+
     }
 
     private void loadResultsData() {
+
+        viewModel.getVisibility(quiz_id).observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Log.d(TAG, "onChanged: "+s);
+                visibility = s.equals("public");
+                if (visibility){
+                    startQuizButton.setText("Start Quiz");
+                    startQuizButton.setBackground(getResources().getDrawable(R.drawable.correct_ans_btn_bg,null));
+                }else {
+                    startQuizButton.setText("Private");
+                    startQuizButton.setBackground(getResources().getDrawable(R.drawable.private_btn_bg,null));
+                }
+            }
+        });
+
         //Get Results
         firestore = FirebaseFirestore.getInstance();
         firestore.collection("QuizList").document(quiz_id)
@@ -142,9 +166,9 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
                        Long wrong = results.getLong("wrong");
                        Long unanswered = results.getLong("unanswered");
 
-                       Log.d(TAG, "correct: "+correct);
-                       Log.d(TAG, "wrong: "+wrong);
-                       Log.d(TAG, "unanswered: "+unanswered);
+//                       Log.d(TAG, "correct: "+correct);
+//                       Log.d(TAG, "wrong: "+wrong);
+//                       Log.d(TAG, "unanswered: "+unanswered);
 
                        //Calculate Progress
                        Long total = correct + wrong + unanswered;
@@ -162,10 +186,15 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment();
-        action.setPosition(position);
-        action.setQuizId(quiz_id);
-        action.setQuizName(quiz_name);
-        navController.navigate(action);
+
+        if (visibility) {
+            DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment();
+            action.setPosition(position);
+            action.setQuizId(quiz_id);
+            action.setQuizName(quiz_name);
+            navController.navigate(action);
+        }else {
+            Toast.makeText(getActivity(), "You can't participate\nIt's private", Toast.LENGTH_LONG).show();
+        }
     }
 }
