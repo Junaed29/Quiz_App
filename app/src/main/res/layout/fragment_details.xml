@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
-    tools:context=".DetailsFragment">
+    tools:context=".views.DetailsFragment">
 
     <ImageView
         android:id="@+id/details_image"
@@ -43,14 +43,14 @@
         android:layout_marginBottom="18dp"
         android:fontFamily="@font/work_sans"
         android:scrollbars="vertical"
-        android:text="Quiz Discription"
+        android:text="@string/Quiz_Discription"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/details_diffucilty"
+        app:layout_constraintBottom_toTopOf="@+id/details_type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details_title"
-        app:lineHeight="28dp" />
+        app:lineHeight="20dp" />
 
     <TextView
         android:id="@+id/details_diffucilty"
@@ -59,10 +59,23 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/work_sans"
-        android:text="Diffucilty"
+        android:text="Course Id"
         android:textColor="@color/colorLightText"
-        android:textSize="18sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/details_questions"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/details_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/work_sans"
+        android:text="Quiz Type"
+        android:textColor="@color/colorLightText"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/details_diffucilty"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -72,7 +85,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/work_sans"
-        android:text="Total Question"
+        android:text="Department"
         android:textColor="@color/colorLightText"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/details_score"
@@ -85,7 +98,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="24dp"
         android:fontFamily="@font/work_sans"
-        android:text="Your Last Score"
+        android:text="Batch"
         android:textColor="@color/colorLightText"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/details_start_btn"
@@ -96,12 +109,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
+        android:fontFamily="@font/work_sans"
         android:text="NA"
         android:textColor="@color/colorLightText"
-        android:textSize="18sp"
-        android:fontFamily="@font/work_sans"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/details_diffucilty" />
+
+    <TextView
+        android:id="@+id/details_type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:fontFamily="@font/work_sans"
+        android:text="NA"
+        android:textColor="@color/colorLightText"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/details_type" />
 
     <TextView
         android:id="@+id/details_questions_text"

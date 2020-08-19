@@ -1,4 +1,4 @@
-package com.jsc.quizapp;
+package com.jsc.quizapp.model;
 
 import com.google.firebase.firestore.DocumentId;
 
@@ -7,7 +7,7 @@ public class QuestionModel {
     @DocumentId
     private String questionId;
 
-    private String question, option_a, option_b, option_c, answer;
+    private String question, answer, option_a, option_b, option_c;
     private long timer;
 
     public QuestionModel() {

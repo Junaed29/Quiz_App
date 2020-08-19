@@ -1,4 +1,4 @@
-package com.jsc.quizapp;
+package com.jsc.quizapp.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,14 +11,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.jsc.quizapp.R;
+import com.jsc.quizapp.model.QuestionDetailsModel;
 
 import java.util.List;
 
 public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizViewHolder> {
 
 
-    private List<QuizListModel> quizListModels;
+    private List<QuestionDetailsModel> quizListModels;
 
     private OnClickQuizButton clickQuizButton;
 
@@ -38,22 +39,24 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
 
     @Override
     public void onBindViewHolder(@NonNull QuizViewHolder holder, int position) {
-        holder.titleTextView.setText(quizListModels.get(position).getName());
-
-        String imageUrl = quizListModels.get(position).getImage();
+        holder.titleTextView.setText(quizListModels.get(position).getQuestionTitle());
+//
+//        String imageUrl = quizListModels.get(position).getImage();
 //        Glide.with(holder.itemView.getContext())
 //                .load(imageUrl)
 //                .centerCrop()
 //                .placeholder(R.drawable.placeholder_image)
 //                .into(holder.placeHolderImageView);
 
-        String desc_text = quizListModels.get(position).getDesc();
-        if (desc_text.length()>150){
-            desc_text = desc_text.substring(0,150);
-        }
+        String desc_text = quizListModels.get(position).getCourseId();
+//        if (desc_text.length()>150){
+//            desc_text = desc_text.substring(0,150);
+//        }
+//
+        holder.descTextView.setText(desc_text);
 
-        holder.descTextView.setText(desc_text+"...");
-        holder.difficultyTextView.setText(quizListModels.get(position).getLevel());
+        String depBatch = quizListModels.get(position).getDept() + "  " + quizListModels.get(position).getBatch();
+        holder.difficultyTextView.setText(depBatch);
 
     }
 
@@ -92,11 +95,11 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
         }
     }
 
-    public void setQuizListModels(List<QuizListModel> quizListModels) {
+    public void setQuizListModels(List<QuestionDetailsModel> quizListModels) {
         this.quizListModels = quizListModels;
     }
 
-    public interface OnClickQuizButton{
+    public interface OnClickQuizButton {
         void onItemClick(int position);
     }
 }

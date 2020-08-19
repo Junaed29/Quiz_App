@@ -1,13 +1,6 @@
-package com.jsc.quizapp;
+package com.jsc.quizapp.views;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +9,19 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.jsc.quizapp.R;
 
 public class ResultFragment extends Fragment {
 
@@ -32,6 +33,9 @@ public class ResultFragment extends Fragment {
 
     private String currentUserId;
     private String quiz_id;
+    private String quiz_type;
+
+    ConstraintLayout exerciseLayout, testLayout;
 
     private TextView correctTextView;
     private TextView wrongTextView;
@@ -59,16 +63,28 @@ public class ResultFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        exerciseLayout = view.findViewById(R.id.exerciseLayout);
+        exerciseLayout.setVisibility(View.GONE);
+        testLayout = view.findViewById(R.id.tsetLayout);
+        testLayout.setVisibility(View.GONE);
+
         navController = Navigation.findNavController(view);
 
         firebaseAuth = firebaseAuth.getInstance();
-        if (firebaseAuth.getCurrentUser()==null){
+        if (firebaseAuth.getCurrentUser() == null) {
             // Go back to Home
-        }else {
+        } else {
             currentUserId = firebaseAuth.getCurrentUser().getUid();
         }
 
         quiz_id = ResultFragmentArgs.fromBundle(getArguments()).getQuizId();
+        quiz_type = ResultFragmentArgs.fromBundle(getArguments()).getQuizType();
+
+        if (quiz_type.contains("test")){
+            testLayout.setVisibility(View.VISIBLE);
+        }else {
+            exerciseLayout.setVisibility(View.VISIBLE);
+        }
 
         titleTextView = view.findViewById(R.id.result_title);
         correctTextView = view.findViewById(R.id.result_correct_text);
@@ -87,13 +103,13 @@ public class ResultFragment extends Fragment {
 
         //Get Results
         firestore = FirebaseFirestore.getInstance();
-        firestore.collection("QuizList").document(quiz_id)
+        firestore.collection("AllAboutQuiz").document(quiz_id)
                 .collection("Results").document(currentUserId)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    Log.d(TAG, "onComplete: "+task);
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: " + task);
 
                     DocumentSnapshot results = task.getResult();
 
@@ -102,20 +118,20 @@ public class ResultFragment extends Fragment {
                     Long unanswered = results.getLong("unanswered");
 
                     correctTextView.setText(correct.toString());
-                    missedTextView.setText(wrong.toString());
-                    wrongTextView.setText(unanswered.toString());
+                    missedTextView.setText(unanswered.toString());
+                    wrongTextView.setText(wrong.toString());
 
                     //Calculate Progress
                     Long total = correct + wrong + unanswered;
 
-                    Long percent = (correct*100)/total;
-                    resultPercentTextView.setText(percent.toString()+"%");
+                    Long percent = (correct * 100) / total;
+                    resultPercentTextView.setText(percent.toString() + "%");
 
                     progressBar.setProgress(percent.intValue());
 
-                }else {
+                } else {
                     titleTextView.setText(task.getException().getMessage());
-                    Log.d(TAG, "onComplete: "+task.getException().getMessage());
+                    Log.d(TAG, "onComplete: " + task.getException().getMessage());
                 }
             }
         });

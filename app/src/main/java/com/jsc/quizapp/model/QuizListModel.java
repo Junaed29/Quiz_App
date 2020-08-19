@@ -1,4 +1,4 @@
-package com.jsc.quizapp;
+package com.jsc.quizapp.model;
 
 import com.google.firebase.firestore.DocumentId;
 

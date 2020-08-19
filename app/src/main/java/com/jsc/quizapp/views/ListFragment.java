@@ -1,5 +1,7 @@
-package com.jsc.quizapp;
+package com.jsc.quizapp.views;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +23,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.jsc.quizapp.R;
+import com.jsc.quizapp.adapter.QuizListAdapter;
+import com.jsc.quizapp.model.QuestionDetailsModel;
+import com.jsc.quizapp.model.QuizListModel;
+import com.jsc.quizapp.utils.NetworkHelper;
+import com.jsc.quizapp.viewmodel.QuizViewModel;
+
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class ListFragment extends Fragment implements QuizListAdapter.OnClickQuizButton {
 
@@ -31,9 +42,11 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnClickQui
     private RecyclerView recyclerView;
     private QuizListAdapter adapter;
     private ProgressBar listProgressBar;
-    private Animation fade_in_Anim,fade_out_Anim;
+    private Animation fade_in_Anim, fade_out_Anim;
     private NavController navController;
     private SwipeRefreshLayout refreshLayout;
+
+    String dept = "", batch = "";
 
     public ListFragment() {
         // Required empty public constructor
@@ -43,6 +56,12 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnClickQui
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                "com.jsc.quizapp", Context.MODE_PRIVATE);
+        batch = prefs.getString("userBatch","null");
+        dept = prefs.getString("userDept","null");
+
 
         recyclerView = (RecyclerView) view.findViewById(R.id.list_view);
         listProgressBar = (ProgressBar) view.findViewById(R.id.list_progress);
@@ -71,8 +90,6 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnClickQui
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //Toast.makeText(getContext(), "onCreateView", Toast.LENGTH_SHORT).show();
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
@@ -82,16 +99,16 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnClickQui
         startViewModel();
     }
 
-    public void startViewModel(){
+    public void startViewModel() {
         Log.d(TAG, "startViewModel: ");
         viewModel = new ViewModelProvider(getActivity()).get(QuizViewModel.class);
-        viewModel.getQuizListLiveData().observe(getViewLifecycleOwner(), new Observer<List<QuizListModel>>() {
+        viewModel.getQuizListLiveData(dept,batch).observe(getViewLifecycleOwner(), new Observer<List<QuestionDetailsModel>>() {
             @Override
-            public void onChanged(List<QuizListModel> quizListModels) {
+            public void onChanged(List<QuestionDetailsModel> quizListModels) {
                 // RecyclerView Update
-                if (quizListModels.isEmpty()){
+                if (quizListModels.isEmpty()) {
                     Toast.makeText(getContext(), "List is empty\nAll are private", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     recyclerView.setAnimation(fade_in_Anim);
                     listProgressBar.setAnimation(fade_out_Anim);
 
@@ -105,8 +122,14 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnClickQui
 
     @Override
     public void onItemClick(int position) {
-        ListFragmentDirections.ActionListFragmentToDetailsFragment action = ListFragmentDirections.actionListFragmentToDetailsFragment();
-        action.setPosition(position);
-        navController.navigate(action);
+
+        if(NetworkHelper.isNetworkAvailable(getContext())){
+            ListFragmentDirections.ActionListFragmentToDetailsFragment action = ListFragmentDirections.actionListFragmentToDetailsFragment();
+            action.setPosition(position);
+            navController.navigate(action);
+        }else {
+            Toasty.error(getContext(), "Please Connect to The Internet", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

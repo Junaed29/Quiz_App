@@ -29,14 +29,18 @@
 
     <TextView
         android:id="@+id/list_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="15dp"
         android:fontFamily="@font/crimson_text"
         android:text="Quiz Title"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/list_disc"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_image" />
 
@@ -56,12 +60,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="8dp"
         android:fontFamily="@font/work_sans"
         android:text="Quiz Discription"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/list_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_title"
         app:lineHeight="28dp" />
@@ -72,10 +76,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/work_sans"
         android:text="Diffucilty"
         android:textColor="@color/colorLightText"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_disc" />
 
@@ -83,16 +89,14 @@
         android:id="@+id/list_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
         android:background="@drawable/outline_btn_bg"
         android:fontFamily="@font/work_sans"
-        android:padding="16dp"
+        android:padding="10dp"
         android:text="Start Quiz"
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/list_diffucilty"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_diffucilty" />
+        app:layout_constraintTop_toTopOf="@+id/list_disc" />
 </androidx.constraintlayout.widget.ConstraintLayout>
